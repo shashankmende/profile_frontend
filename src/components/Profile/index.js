@@ -106,8 +106,8 @@ const Profile = () => {
     console.log("request body", reqBody);
 
     try {
-      const url = "http://localhost:3000/exam_profile/profile";
-      // const url = `${process.env.REACT_APP_API_URL}/exam_profile/profile`
+      // const url = "http://localhost:3000/exam_profile/profile";
+      const url = `${process.env.REACT_APP_API_URL}/exam_profile/profile`
 
       console.log("profile url", url);
       const response = await axios.post(url, reqBody);
@@ -215,8 +215,9 @@ const Profile = () => {
 
       const uploadData = new FormData();
       uploadData.append("resume", resume);
+      const url = `${process.env.REACT_APP_API_URL}/exam_profile/uploadResume`
       const response = await axios.post(
-        "http://localhost:3000/exam_profile/uploadResume",
+        url,
         uploadData
       );
       console.log("response:", response);
@@ -488,7 +489,7 @@ const Profile = () => {
                 {profileData.resumePath && (
                   <div className="resume_preview">
                     <a
-                      href={`http://localhost:3000${profileData.resumePath}`}
+                      href={`${process.env.REACT_APP_API_URL}${profileData.resumePath}`}
                       target="_blank"
                       className="resume_preview"
                       rel="noopener noreferrer"
