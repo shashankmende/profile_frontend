@@ -258,7 +258,7 @@ const Profile = () => {
         }}
       >
 
-        <IoMdArrowBack className="back_arrow" size={30} onClick={()=>navigate('/dashboard')}/>
+        {/* <IoMdArrowBack className="back_arrow" size={30} onClick={()=>navigate('/dashboard')}/> */}
         
         <form className="profile_background_color">
           <div className="section_1">
