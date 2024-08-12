@@ -3,10 +3,14 @@ import "./index.css";
 import { CgProfile } from "react-icons/cg";
 import { FiEdit } from "react-icons/fi";
 import { IoCloseSharp } from "react-icons/io5";
+import { IoMdArrowBack } from "react-icons/io";
+
 import ProfessionalDetails from "../ProfessionalDetails";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
+  const navigate =useNavigate()
   const [imagePath, setImagePath] = useState("");
 
   const [showModal, setShowModal] = useState(false);
@@ -25,8 +29,8 @@ const Profile = () => {
     resumePath: "",
   });
   const [errors, setErrors] = useState({});
-  const [selectedPhoto, setSelectedPhoto] = useState(null); // Temporary storage for the selected photo
-  const [selectedPhotoPreview, setSelectedPhotoPreview] = useState(""); // Temporary storage for the pr
+  const [selectedPhoto, setSelectedPhoto] = useState(null); 
+  const [selectedPhotoPreview, setSelectedPhotoPreview] = useState("");
 
   const handleClose = () => setShowModal(false);
   const handleShow = () => setShowModal(true);
@@ -248,9 +252,14 @@ const Profile = () => {
         style={{
           height: "100vh",
           backgroundColor: "#ffffff",
-          paddingTop: "20px",
+          // paddingTop: "20px",
+          // border:"1px solid red"
+
         }}
       >
+
+        <IoMdArrowBack className="back_arrow" size={30} onClick={()=>navigate('/dashboard')}/>
+        
         <form className="profile_background_color">
           <div className="section_1">
             <h1 className="create_student_profile_h1">
@@ -361,7 +370,7 @@ const Profile = () => {
                 <div className="firstname_lastname_wrapper">
                   <div className="label_input_container">
                     <label htmlFor="firstname">
-                      First Name<sup style={{ color: "red" }}>*</sup>
+                      First Name<sup style={{ color: "black" }}>*</sup>
                     </label>
                     <input
                       id="firstname"
@@ -400,7 +409,7 @@ const Profile = () => {
 
               <div className="email_address_container">
                 <label htmlFor="email">
-                  Email Address<sup style={{ color: "red" }}>*</sup>
+                  Email Address<sup style={{ color: "black" }}>*</sup>
                 </label>
                 <input
                   id="email"
@@ -424,7 +433,7 @@ const Profile = () => {
               </div>
               <div className="mobile_number_wrapper email_address_container mt-3">
                 <label htmlFor="mobile_number">
-                  Mobile Number<sup style={{ color: "red" }}>*</sup>
+                  Mobile Number<sup style={{ color: "black" }}>*</sup>
                 </label>
                 <input
                   id="mobile_number"
@@ -447,7 +456,7 @@ const Profile = () => {
               </div>
               <div className="location_wrapper email_address_container mt-3">
                 <label htmlFor="location">
-                  Current Location<sup style={{ color: "red" }}>*</sup>
+                  Current Location<sup style={{ color: "black" }}>*</sup>
                 </label>
                 <input
                   id="location"
