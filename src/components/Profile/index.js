@@ -6,14 +6,14 @@ import { IoCloseSharp } from "react-icons/io5";
 import ProfessionalDetails from "../ProfessionalDetails";
 import axios from "axios";
 
-
 const Profile = () => {
-  const [imagePath,setImagePath]=useState('')
+  const [imagePath, setImagePath] = useState("");
 
   const [showModal, setShowModal] = useState(false);
   const [education, setEducation] = useState([]);
   const [personalDetails, setPersonalDetails] = useState({});
-  
+  // const [resumePath,setResumePath]=useState('')
+  const [resume, setResume] = useState("");
   const [profileData, setProfileData] = useState({
     firstName: "",
     lastName: "",
@@ -22,6 +22,7 @@ const Profile = () => {
     email: "",
     photo: null,
     photoPreview: "",
+    resumePath: "",
   });
   const [errors, setErrors] = useState({});
   const [selectedPhoto, setSelectedPhoto] = useState(null); // Temporary storage for the selected photo
@@ -72,14 +73,10 @@ const Profile = () => {
     if (validateForm()) {
       setPersonalDetails({ ...personalDetails, profileData });
 
-      alert("Profile details saved!")
+      alert("Profile details saved!");
       // toast.success("Profile Details saved to Database!");
-
-
     }
   };
-
-
 
   const onClickProfileSubmit = async (e) => {
     e.preventDefault();
@@ -92,27 +89,27 @@ const Profile = () => {
       return Object.keys(obj).reduce((acc, key) => {
         if (key !== keyToFilter) {
           acc[key] = obj[key];
-        }
-        else if(key==="photoPreview"){
-          acc[key]=imagePath
+        } else if (key === "photoPreview") {
+          acc[key] = imagePath;
         }
         return acc;
       }, {});
     };
 
-    const sampleBody = filterOutKey(personalDetails.profileData,'photo')
+    const sampleBody = filterOutKey(personalDetails.profileData, "photo");
 
     const reqBody = {
-      personal: {...sampleBody,photoPreview:imagePath},
+      personal: { ...sampleBody, photoPreview: imagePath },
       education,
     };
 
-    console.log("request body",reqBody)
+    console.log("request body", reqBody);
 
     try {
-      // const url = "http://localhost:3000/exam_profile/profile";
-      const url = `${process.env.REACT_APP_API_URL}/exam_profile/profile`
-      console.log("profile url",url)
+      const url = "http://localhost:3000/exam_profile/profile";
+      // const url = `${process.env.REACT_APP_API_URL}/exam_profile/profile`
+
+      console.log("profile url", url);
       const response = await axios.post(url, reqBody);
 
       if (response.status === 200) {
@@ -141,10 +138,10 @@ const Profile = () => {
 
   const handlePhotoChange = (e) => {
     const file = e.target.files[0];
-    console.log("File name",file)
+    console.log("File name", file);
     if (file) {
       const filePreview = URL.createObjectURL(file);
-      console.log("File preview",filePreview)
+      console.log("File preview", filePreview);
       setSelectedPhoto(file);
       setSelectedPhotoPreview(filePreview);
     }
@@ -153,19 +150,19 @@ const Profile = () => {
   const handlePhotoUpload = async () => {
     if (selectedPhoto) {
       const formData = new FormData();
-      formData.append('photo', selectedPhoto);
-  
+      formData.append("photo", selectedPhoto);
+
       try {
         // https://profile-backend-1r06.onrender.com/exam_profile/uploadImage
         // const = 'http://localhost:3000/exam_profile/uploadImage'
-        const url = `${process.env.REACT_APP_API_URL}/exam_profile/uploadImage`
-        console.log("image url",url)
+        const url = `${process.env.REACT_APP_API_URL}/exam_profile/uploadImage`;
+        console.log("image url", url);
         const response = await axios.post(url, formData, {
           headers: {
-            'Content-Type': 'multipart/form-data',
+            "Content-Type": "multipart/form-data",
           },
         });
-  
+
         if (response.status === 200) {
           const photoPath = response.data.imagePath || selectedPhotoPreview;
           setProfileData((prevData) => ({
@@ -174,7 +171,7 @@ const Profile = () => {
             photoPreview: URL.createObjectURL(selectedPhoto),
           }));
           console.log("Photo uploaded successfully:", response.data);
-          setImagePath(response.data.imagePath)
+          setImagePath(response.data.imagePath);
         } else {
           console.error("Unexpected response status:", response.status);
           alert("Failed to upload photo. Please try again");
@@ -189,21 +186,60 @@ const Profile = () => {
         } else if (error.request) {
           // Request was made but no response received
           console.error("Request Data:", error.request);
-          alert("No response from server. Please check your network connection.");
+          alert(
+            "No response from server. Please check your network connection."
+          );
         } else {
           // Something else caused the error
           console.error("Error Message:", error.message);
-          alert("An error occurred while uploading the photo. Please try again.");
+          alert(
+            "An error occurred while uploading the photo. Please try again."
+          );
         }
       }
     } else {
       alert("No photo selected. Please choose a file to upload.");
     }
-  
+
     handleClose();
   };
-  
-  
+
+  const onClickUploadResume = async () => {
+    try {
+      console.log("Resume upload button is clicked");
+      if (!resume) {
+        // console.log("No resume selected")
+        alert("No resume selected");
+        return;
+      }
+
+      const uploadData = new FormData();
+      uploadData.append("resume", resume);
+      const response = await axios.post(
+        "http://localhost:3000/exam_profile/uploadResume",
+        uploadData
+      );
+      console.log("response:", response);
+      setProfileData((prevData) => ({
+        ...prevData,
+        resumePath: response.data.filePath,
+      }));
+
+      alert("Resume uploaded successfully!");
+      setResume("");
+    } catch (error) {
+      if (error.response) {
+        alert(`Error: ${error.response.data.message} || "An error occured"}`);
+      } else {
+        alert("An error occured white uploading the resume. Please try again.");
+      }
+    }
+  };
+
+  const onChangeResumeInput = (e) => {
+    const file = e.target.files[0];
+    setResume(file);
+  };
 
   return (
     <>
@@ -232,8 +268,6 @@ const Profile = () => {
                   className="profile_button"
                   onClick={handleShow}
                 >
-                
-
                   {profileData.photoPreview ? (
                     <img
                       src={profileData.photoPreview}
@@ -434,6 +468,37 @@ const Profile = () => {
                 )}
               </div>
 
+              <div className="resume_wrapper">
+                <label htmlFor="resume">Select Your Resume:</label>
+                <input
+                  onChange={onChangeResumeInput}
+                  type="file"
+                  id="resume"
+                  name="resume"
+                  accept=".pdf,.doc,.docx"
+                  required
+                />
+                <button
+                  onClick={onClickUploadResume}
+                  type="button"
+                  className="resume_upload_button"
+                >
+                  Upload
+                </button>
+                {profileData.resumePath && (
+                  <div className="resume_preview">
+                    <a
+                      href={`http://localhost:3000${profileData.resumePath}`}
+                      target="_blank"
+                      className="resume_preview"
+                      rel="noopener noreferrer"
+                    >
+                      Preview Resume
+                    </a>
+                  </div>
+                )}
+              </div>
+
               <div className="personal_details_save_btn_wrapper">
                 <button
                   type="submit"
@@ -443,21 +508,6 @@ const Profile = () => {
                 >
                   Save
                 </button>
-                {/* <ToastContainer
-                  position="top-right"
-                  autoClose={5000}
-                  hideProgressBar={false}
-                  newestOnTop={false}
-                  closeOnClick
-                  rtl={false}
-                  pauseOnFocusLoss
-                  draggable
-                  pauseOnHover
-                  theme="light"
-                  transition="Bounce"
-                />
-                
-                <ToastContainer /> */}
               </div>
             </form>
 
@@ -468,10 +518,17 @@ const Profile = () => {
             </div>
           </div>
           <div
-            style={{ display: "flex", justifyContent: "flex-end",marginTop:"20px" }}
-            
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              marginTop: "20px",
+            }}
           >
-            <button type="submit" className="submit_button" onClick={onClickProfileSubmit}>
+            <button
+              type="submit"
+              className="submit_button"
+              onClick={onClickProfileSubmit}
+            >
               Submit
             </button>
           </div>

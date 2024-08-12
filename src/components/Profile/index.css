@@ -451,3 +451,25 @@
 ::-webkit-scrollbar-thumb:hover {
     background-color: #555;
 } */
+
+
+.resume_wrapper{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 15px;
+    width: 70%;
+}
+
+.resume_upload_button{
+    width: 150px;
+    /* margin: auto; */
+    border: none;
+    background-color: hsl(240, 11%, 82%);
+    border-radius: 8px;
+    /* font-weight: bold; */
+}
+
+.resume_preview{
+    text-decoration: none;
+}
